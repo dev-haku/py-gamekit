@@ -1,6 +1,10 @@
-import pygame
 from dataclasses import dataclass
+
+import pygame
+import time
+
 from game import config
+
 
 class Engine:  
 
@@ -12,22 +16,17 @@ class Engine:
             pygame.RESIZABLE
         )
 
-        pygame.display.set_caption(
-            config.game["name"]
-        )
-
-        pygame.display.set_icon(
-            pygame.image.load(config.game["icon_image_path"])
-        )
+        pygame.display.set_caption(config.game["name"])
+        pygame.display.set_icon(pygame.image.load(config.game["icon_image_path"]))
         
         self.running = False
 
         self.screen = pygame.Surface(config.game["screen_size"])
-        init_scene_class = config.game["init_scene_class"]
+        init_scene_class = config.game["initial_scene_class"]
         self.current_scene = init_scene_class()
 
-        self.tps = config.game["tps"]
-        self.fps = config.game["fps"]
+        self.max_tps = config.game["max_tps"]
+        self.max_fps = config.game["max_fps"]
 
         self.delta_time = 0
 
@@ -39,19 +38,37 @@ class Engine:
 
     def _loop(self):
         clock = pygame.time.Clock()
-        accumulator = 0
+        accumulator = 0.0
+        prev_tick = time.time()
+
+        tick_samples = []
 
         while self.running:
-            fixed_dt = 1 / self.tps
-            frame_dt = clock.tick(self.fps) / 1000
+            fixed_dt = 1.0 / self.max_tps
+            frame_dt = clock.tick(self.max_fps) / 1000
+
             accumulator += frame_dt
 
             while accumulator >= fixed_dt:
-                self.delta_time = fixed_dt
+                now = time.time()
+                elapsed = now - prev_tick
+                if elapsed > 0:
+                    tick_samples.append(1 / elapsed)
                 self._update()
                 accumulator -= fixed_dt
+                prev_tick = time.time()
 
             self._draw()
+
+            self.delta_time = fixed_dt
+
+
+            if len(tick_samples) >= self.max_tps:
+                avg_fps = round(clock.get_fps())
+                avg_tps = round(sum(tick_samples) / len(tick_samples))
+                tick_samples.clear()
+
+                print(f'{avg_tps} ticks, {avg_fps} fps')
 
     def _update(self):
         self._process_input_events()

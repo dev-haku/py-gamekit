@@ -1,15 +1,15 @@
-from game.app.main_scene import MainScene
+from game.app.game_scene import GameScene
 
 game = {
     "name" : "MyGame",
-    "phase" : "pre-alpha",
     "version" : "0.1",
     "icon_image_path" : "./game/kit/asset/img/icon.ico",
-
-    "init_scene_class" : MainScene,
-
-    "tps" : 30,
+    
     "window_size" : [800,600],
     "screen_size" : [640,480],
-    "fps" : 60
+
+    "max_tps" : 30,
+    "max_fps" : 60,
+
+    "initial_scene_class" : GameScene,
 }
