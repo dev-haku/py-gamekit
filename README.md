@@ -11,7 +11,7 @@ This is a lightweight game framework designed to simplify game development in Py
 ### Clone and Use
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/dev-haku/py-gamekit.git
 cd py-gamekit
 ```
 
