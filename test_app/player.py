@@ -1,0 +1,119 @@
+import pygame
+import json
+
+from game.kit.gameobject.worldobject.base_worldobject import BaseWorldobject
+from game.kit.component.base_component import BaseComponent
+from game.kit.component.animation_renderer import AnimationRenderer
+from game.kit.component.collider import Collider
+
+
+class Player(BaseWorldobject):
+
+    def __init__(self, position:tuple, scale:tuple, layer:int,):
+        super().__init__()
+        
+        transform = self.get_component("Transform")
+        transform.position = position
+        transform.scale = scale
+        transform.layer = layer
+
+        animation_renderer = AnimationRenderer()
+
+        with open("./test_app/asset/player/player_animations.json", "r") as f:
+            data = json.load(f)
+
+        for name, info in data.items():
+            frames: list[pygame.Surface] = []
+            spritesheet_surface = pygame.image.load(info["spritesheet_image_path"])
+            for frame_info in info["frames"]:
+                x, y, w, h = frame_info
+                crop_area = pygame.Rect(x*w, y*h, w, h)
+                cropped_surface = spritesheet_surface.subsurface(crop_area)
+                frames.append(cropped_surface)
+
+            animation_renderer.animator.add_animation(name, frames, info["fps"],  info["is_loop"])
+
+        self.add_component(animation_renderer)
+
+        collider = Collider()
+        collider.is_collision_enabled = False
+        collider.add_hitbox((-0,-0), (14,14), (255,0,0,200))
+        self.add_component(collider)
+
+        state = State() 
+        state.speed = 5
+        self.add_component(state)
+        
+        self.add_component(Controller())
+        
+
+class State(BaseComponent):
+    def __init__(self):
+        super().__init__()
+        
+class Controller(BaseComponent):
+
+    def start(self, engine):
+        self.transform = self.parent_gameobject.get_component("Transform")
+        self.animation_renderer: AnimationRenderer = self.parent_gameobject.get_component("AnimationRenderer")
+        self.collider: Collider = self.parent_gameobject.get_component("Collider")
+        self.state: State = self.parent_gameobject.get_component("State")
+
+        self.camera = engine.current_scene.get_worldobject("Camera")
+
+        self.stack = [0,0,0,0]
+
+        return super().start(engine)
+    
+    def update(self, engine):
+        keys = engine.input_status.keys
+        dt = engine.delta_time
+
+        camera_transform = self.camera.get_component("Transform")
+
+        scale =  self.transform.scale
+
+        surface_size = self.animation_renderer.renderer.surface.get_size()
+        scaled_size = (
+            surface_size[0] * scale.x, 
+            surface_size[1] * scale.y
+        )
+
+        state = self.state
+
+        animator = self.animation_renderer.animator
+
+        if keys.get("w", False):
+            self.transform.position.y -= (scaled_size[1] / 2) * state.speed * dt
+            animator.change_animation("up_walk", True)
+            if self.collider.is_colliding():
+                self.transform.position.y += (scaled_size[1] / 2) * state.speed * dt
+
+        if keys.get("s", False):
+            self.transform.position.y += (scaled_size[1] / 2) * state.speed * dt
+            animator.change_animation("down_walk", True)
+            if self.collider.is_colliding():
+                self.transform.position.y -= (scaled_size[1] / 2) * state.speed * dt
+
+        if keys.get("a", False):
+            self.transform.position.x -= (scaled_size[0] / 2) * state.speed * dt
+            animator.change_animation("left_walk", True)
+            if self.collider.is_colliding():
+                self.transform.position.x += (scaled_size[0] / 2) * state.speed * dt
+        
+        if keys.get("d", False):
+            self.transform.position.x += (scaled_size[0] / 2) * state.speed * dt
+            animator.change_animation("right_walk", True)
+            if self.collider.is_colliding():
+                self.transform.position.x -= (scaled_size[0] / 2) * state.speed * dt
+
+        if keys.get("1", False):
+            scale.x += 1
+            scale.y += 1
+
+
+        self.transform.scale = scale 
+
+        camera_transform.position = self.transform.position
+        
+        return super().update(engine)

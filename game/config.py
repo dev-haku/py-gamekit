@@ -1,4 +1,4 @@
-from game.app.game_scene import GameScene
+from test_app.game_scene import GameScene
 
 game = {
     "name" : "MyGame",
