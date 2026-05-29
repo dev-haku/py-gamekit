@@ -16,7 +16,6 @@ BUILD_ROOT = ROOT / "build" / DIR_NAME
 BUILD_ROOT.mkdir(parents=True, exist_ok=True)
 
 
-# 古い.spec を削除
 spec_file = BUILD_ROOT / f"{_name}.spec"
 if spec_file.exists():
     spec_file.unlink()
@@ -24,6 +23,7 @@ if spec_file.exists():
 cmd = [
     "pyinstaller",
     "--onedir",
+    "--contents-directory", ".",
     "--noconsole",
     "--name",        _name,
     "--icon",        str((ROOT / _icon_image_path).resolve()),

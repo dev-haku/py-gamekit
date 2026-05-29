@@ -1,6 +1,7 @@
 import pygame
 import json
 
+from game import paths
 from game.kit.gameobject.worldobject.base_worldobject import BaseWorldobject
 from game.kit.component.base_component import BaseComponent
 from game.kit.component.animation_renderer import AnimationRenderer
@@ -19,12 +20,12 @@ class Player(BaseWorldobject):
 
         animation_renderer = AnimationRenderer()
 
-        with open("./test_app/asset/player/player_animations.json", "r") as f:
+        with open(paths.APP_ASSET_DIR / "player/player_animations.json", "r") as f:
             data = json.load(f)
 
         for name, info in data.items():
             frames: list[pygame.Surface] = []
-            spritesheet_surface = pygame.image.load(info["spritesheet_image_path"])
+            spritesheet_surface = pygame.image.load(paths.APP_ASSET_DIR / info["spritesheet_image_path"])
             for frame_info in info["frames"]:
                 x, y, w, h = frame_info
                 crop_area = pygame.Rect(x*w, y*h, w, h)
