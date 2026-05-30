@@ -1,5 +1,7 @@
 # py-gamekit
 
+jp [日本語ドキュメント](./docs/README_ja.md) | 
+
 ## About
 
 This is a Python-based game framework for creating 2D games.
@@ -38,4 +40,4 @@ The build will be created in the `build/` directory.
 
 ## License
 
-Check LICENSE file for details.
+Check [LICENSE](./LICENSE) file for details.
