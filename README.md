@@ -1,6 +1,8 @@
 # py-gamekit
 
-jp [日本語ドキュメント](./docs/README_ja.md) | 
+![](https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge&labelColor=gray)
+
+[日本語ドキュメント](./docs/README_ja.md)
 
 ## About
 
@@ -8,20 +10,25 @@ This is a Python-based game framework for creating 2D games.
 
 ## Getting Started
 
-### Clone and Use
+
+### Install Python
+
+Install Python 3.13.9.
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/dev-haku/py-gamekit.git
 cd py-gamekit
 ```
 
-### Installation
+### Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+python -3.13 -m pip install -r requirements.txt
 ```
 
-### Running Your Game
+### Run Your Game
 
 ```bash
 python run.py
@@ -30,13 +37,13 @@ python run.py
 
 ## Building
 
-To build a standalone executable requires PyInstaller
+To build a standalone executable, PyInstaller is required.
 
 ```bash
 python build.py
 ```
 
-The build will be created in the `build/` directory.
+The build output will be generated in the build/ directory.
 
 ## License
 
