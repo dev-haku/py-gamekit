@@ -8,6 +8,9 @@ py-gamekit は、2Dゲーム開発のための Python ベースのゲームフ�
 
 ## はじめに
 
+### Python 3.13.9 のインストール
+
+
 ### クローン
 
 ```bash
@@ -15,21 +18,21 @@ git clone https://github.com/dev-haku/py-gamekit.git
 cd py-gamekit
 ```
 
-### 必要なライブラリのインストール
+### 依存関係ライブラリのインストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### あなたのゲームをスタートするには
+### ゲームのスタート
 
 ```bash
 python run.py
 ```
 
 
-## あなたのゲームのビルド方法
-実行ファイル (.exe) を生成するには、PyInstallerが必須です。  
+## ビルド
+実行ファイル (.exe) を生成には、PyInstallerが必須です。  
 依存関係については [pyproject](../pyproject.toml) をチェック。
 
 ```bash
