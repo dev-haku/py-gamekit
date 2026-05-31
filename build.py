@@ -28,7 +28,7 @@ cmd = [
     "--name",        _name,
     "--icon",        str((ROOT / _icon_image_path).resolve()),
     "--add-data",    f"{ROOT / 'game/app/asset'};game/app/asset",
-    "--add-data",    f"{ROOT / 'game/kit/asset'};game/kit/asset",
+    "--add-data",    f"{ROOT / 'game/package/asset'};game/package/asset",
     "--distpath",    str(BUILD_ROOT / "dist"),
     "--workpath",    str(BUILD_ROOT / "build"),
     "--specpath",    str(BUILD_ROOT),

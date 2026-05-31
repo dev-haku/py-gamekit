@@ -1,8 +1,9 @@
 import pygame
 
-from game.kit.gameobject.worldobject.base_worldobject import BaseWorldobject
-from game.kit.component.sprite_renderer import SpriteRenderer
-from game.kit.component.collider import Collider
+from game.package.base_object.worldobject import BaseWorldobject
+from game.package.component.renderer import Renderer
+from game.package.component.sprite import Sprite
+from game.package.component.collider import Collider
 
 class Square(BaseWorldobject):
     def __init__(
@@ -10,15 +11,18 @@ class Square(BaseWorldobject):
             position: tuple[float,float], 
             scale: tuple[float,float], 
             layer: int,
-            color: tuple[int,int,int] = (255,255,255)
+            color: tuple[int,int,int]
         ):
         super().__init__()
+
         transfrom = self.get_component("Transform")
         transfrom.position = position
         transfrom.scale = scale
         transfrom.layer = layer
 
-        sprite = SpriteRenderer()
+        self.add_component(Renderer())
+
+        sprite = Sprite()
         surface = pygame.Surface((8,8))
         surface.fill(color)
         sprite.set_surface(surface)

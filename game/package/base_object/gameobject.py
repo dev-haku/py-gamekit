@@ -1,5 +1,5 @@
 import time
-from game.kit.component.destory import Destroy
+from game.package.component.destory import Destroy
 
 class BaseGameobject:
     def __init__(self):

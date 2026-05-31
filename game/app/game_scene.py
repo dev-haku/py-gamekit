@@ -1,18 +1,20 @@
-from game.kit.scene.base_scene import BaseScene
+from game.package.base_object import BaseScene
+from game.package.gameobject.worldobject.square import Square
 from .player import Player
-from game.kit.gameobject.worldobject.square import Square
 from .ui import Image
+from .move_square import MoveSquare
 
 
 class GameScene(BaseScene):
+
     def start(self, engine):
         player = Player((-100,0), (2,2),4)
-        square1 = Square((50,80),(10,40), 2)
-        square2 = Square((50,0),(40,10), 2)
         
         self.add_worldobject(player)
-        self.add_worldobject(square1)
-        self.add_worldobject(square2)
+        for x in range(1):
+            for y in range(10):
+                square = MoveSquare((x*100,y*100),(1,1), 2, (255,255,255))
+                self.add_worldobject(square)
 
         image = Image((0.15,0.9), (100,50), (1,1), 1)
         self.add_uiobject(image)

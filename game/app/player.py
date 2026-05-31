@@ -2,10 +2,11 @@ import pygame
 import json
 
 from game import paths
-from game.kit.gameobject.worldobject.base_worldobject import BaseWorldobject
-from game.kit.component.base_component import BaseComponent
-from game.kit.component.animation_renderer import AnimationRenderer
-from game.kit.component.collider import Collider
+from game.package.base_object.worldobject import BaseWorldobject
+from game.package.base_object.component import BaseComponent
+from game.package.component import Renderer
+from game.package.component import Animator
+from game.package.component import Collider
 
 
 class Player(BaseWorldobject):
@@ -18,7 +19,9 @@ class Player(BaseWorldobject):
         transform.scale = scale
         transform.layer = layer
 
-        animation_renderer = AnimationRenderer()
+        self.add_component(Renderer())
+
+        animator = Animator()
 
         with open(paths.APP_ASSET_DIR / "player/player_animations.json", "r") as f:
             data = json.load(f)
@@ -32,9 +35,9 @@ class Player(BaseWorldobject):
                 cropped_surface = spritesheet_surface.subsurface(crop_area)
                 frames.append(cropped_surface)
 
-            animation_renderer.animator.add_animation(name, frames, info["fps"],  info["is_loop"])
+            animator.add_animation(name, frames, info["fps"],  info["is_loop"])
 
-        self.add_component(animation_renderer)
+        self.add_component(animator)
 
         collider = Collider()
         collider.is_collision_enabled = False
@@ -56,7 +59,8 @@ class Controller(BaseComponent):
 
     def start(self, engine):
         self.transform = self.parent_gameobject.get_component("Transform")
-        self.animation_renderer: AnimationRenderer = self.parent_gameobject.get_component("AnimationRenderer")
+        self.renderer = self.parent_gameobject.get_component("Renderer")
+        self.animator: Animator = self.parent_gameobject.get_component("Animator")
         self.collider: Collider = self.parent_gameobject.get_component("Collider")
         self.state: State = self.parent_gameobject.get_component("State")
 
@@ -74,7 +78,7 @@ class Controller(BaseComponent):
 
         scale =  self.transform.scale
 
-        surface_size = self.animation_renderer.renderer.surface.get_size()
+        surface_size = self.renderer.render_objects[id(self.animator)].surface.get_size()
         scaled_size = (
             surface_size[0] * scale.x, 
             surface_size[1] * scale.y
@@ -82,29 +86,27 @@ class Controller(BaseComponent):
 
         state = self.state
 
-        animator = self.animation_renderer.animator
-
         if keys.get("w", False):
             self.transform.position.y -= (scaled_size[1] / 2) * state.speed * dt
-            animator.change_animation("up_walk", True)
+            self.animator.change_animation("up_walk", True)
             if self.collider.is_colliding():
                 self.transform.position.y += (scaled_size[1] / 2) * state.speed * dt
 
         if keys.get("s", False):
             self.transform.position.y += (scaled_size[1] / 2) * state.speed * dt
-            animator.change_animation("down_walk", True)
+            self.animator.change_animation("down_walk", True)
             if self.collider.is_colliding():
                 self.transform.position.y -= (scaled_size[1] / 2) * state.speed * dt
 
         if keys.get("a", False):
             self.transform.position.x -= (scaled_size[0] / 2) * state.speed * dt
-            animator.change_animation("left_walk", True)
+            self.animator.change_animation("left_walk", True)
             if self.collider.is_colliding():
                 self.transform.position.x += (scaled_size[0] / 2) * state.speed * dt
         
         if keys.get("d", False):
             self.transform.position.x += (scaled_size[0] / 2) * state.speed * dt
-            animator.change_animation("right_walk", True)
+            self.animator.change_animation("right_walk", True)
             if self.collider.is_colliding():
                 self.transform.position.x -= (scaled_size[0] / 2) * state.speed * dt
 

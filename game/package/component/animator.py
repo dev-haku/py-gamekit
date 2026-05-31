@@ -1,7 +1,6 @@
 import pygame
 
-from game.kit.component.base_component import BaseComponent, Renderer
-
+from game.package.base_object.component import BaseComponent
 
 class AnimationData:
 
@@ -78,7 +77,7 @@ class AnimationPlayer():
         self.elapsed = 0.0
 
 
-class Animator():
+class Animator(BaseComponent):
 
     def __init__(self):
         super().__init__()
@@ -86,13 +85,24 @@ class Animator():
         self.animation_player: AnimationPlayer = AnimationPlayer()
 
 
-    def start(self) -> None:
+    def start(self, engine) -> None:
+        self.transform = self.parent_gameobject.get_component("Transform")
+        self.renderer = self.parent_gameobject.get_component("Renderer")
+        self.renderer.register_render_as(id(self))
+    
         if len(self.animations) >= 1:
             self.animation_player.animation = self.animations[0]
 
     def update(self, engine):
         self.animation_player.update(engine.delta_time)
 
+        frames = self.animation_player.animation.get_scaled_frames(tuple(self.transform.scale.xy))
+        frame_index = self.animation_player.frame_index
+
+        obj = self.renderer.render_objects[id(self)]
+        obj.surface = frames[frame_index]
+        obj.position = tuple(self.transform.position.xy)
+        obj.layer = self.transform.layer
 
     def add_animation(
         self,
@@ -137,37 +147,4 @@ class Animator():
             f"アニメーション '{name}' が見つかりませんでした。"
         )
         return None
-
-class AnimationRenderer(BaseComponent):
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.animator = Animator()
-        self.renderer = Renderer()
-
-    def start(self, engine):
-        self.animator.start()
-        self.transform = self.parent_gameobject.get_component("Transform")
-        return super().start(engine)
-
-    def update(self, engine) -> None:
-        self.animator.update(engine)
-
-        animation_player: AnimationPlayer  = self.animator.animation_player
-        if animation_player.animation is None:
-            return super().update(engine)
-        
-        frames = animation_player.animation.get_scaled_frames(self._get_current_parent_scale())
-
-        self.renderer.surface = frames[animation_player.frame_index]
-        self.renderer.position = self.transform.position
-        self.renderer.layer = self.transform.layer
-
-        return super().update(engine)
     
-    def _get_current_parent_scale(self) -> tuple[float, float]:
-        if self.transform is None:
-            return (1.0, 1.0)
-        scale = self.transform.scale
-
-        return (scale.x, scale.y)

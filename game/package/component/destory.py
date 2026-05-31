@@ -1,4 +1,4 @@
-from game.kit.component.base_component import BaseComponent
+from game.package.base_object.component import BaseComponent
 
 class Destroy(BaseComponent):
     def __init__(self):

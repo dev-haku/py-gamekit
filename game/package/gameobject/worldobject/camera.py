@@ -1,4 +1,4 @@
-from game.kit.gameobject.worldobject.base_worldobject import BaseWorldobject
+from game.package.base_object.worldobject import BaseWorldobject
 
 class Camera(BaseWorldobject):
     

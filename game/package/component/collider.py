@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame
 
-from game.kit.component.base_component import BaseComponent, Renderer
+from game.package.base_object.component import BaseComponent
 
 @dataclass
 class Hitbox:
@@ -20,11 +20,13 @@ class Collider(BaseComponent):
         self.is_collision_enabled = True
         self.is_render_debug = True
 
-        self.renderer = Renderer()
-
     def start(self, engine):
         self.worldobjects = engine.current_scene.world
+
         self.transform = self.parent_gameobject.get_component("Transform")
+        self.renderer = self.parent_gameobject.get_component("Renderer")
+        self.renderer.register_render_as(id(self))
+
         self.last_pos = self.transform.position
 
         return super().start(engine)
@@ -138,10 +140,8 @@ class Collider(BaseComponent):
             hitbox_surface.fill(hitbox[4])
             combined_surface.blit(hitbox_surface, (hitbox[0] - x, hitbox[1] - y))
 
-
-        self.renderer.surface = combined_surface
-        self.renderer.position = (
-            position.x + x, 
-            position.y + y
-            )
+        obj = self.renderer.render_objects[id(self)]
+        obj.surface = combined_surface
+        obj.position = (position.x + x, position.y + y)
+        obj.layer = self.transform.layer -1
 
