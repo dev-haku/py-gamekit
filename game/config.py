@@ -10,7 +10,7 @@ game = {
     "screen_size" : [960,540],
 
     "max_tps" : 30,
-    "max_fps" : 1,
+    "max_fps" : 30,
 
     "initial_scene_class" : GameScene,
 }

@@ -40,18 +40,40 @@ class Engine:
         accumulator = 0.0
         fixed_dt = 1.0 / self.max_tps
 
+        tps_timer = 0
+        tps_count = 0
+        fps_timer = 0
+        fps_count = 0
+        tps = 0
+
         while self.running:
             dt = clock.tick(self.max_fps) / 1000
+            accumulator += min(dt, fixed_dt * 5)
 
-            accumulator += dt
+            fps_timer += dt
 
             while accumulator >= fixed_dt:
+                self.delta_time = fixed_dt
                 self._update()
+
                 accumulator -= fixed_dt
+                
+                tps_timer += fixed_dt
+                tps_count += 1
             
             self._draw()
+            fps_count += 1
 
-            self.delta_time = fixed_dt
+            if tps_timer >= 1:     
+                tps = tps_count
+                tps_timer = 0
+                tps_count = 0
+
+            if fps_timer >= 1:
+                print(f"{tps} ticks, {fps_count} fps")
+
+                fps_timer = 0
+                fps_count = 0
 
     def _update(self):
         self._process_input_events()
