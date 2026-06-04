@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame
 
-from game.package.base_object.component import BaseComponent
+from game.package.base_object.base_component import BaseComponent
 from game.package.util.make_empty_surface import make_empty_surface
 
 @dataclass
@@ -17,6 +17,3 @@ class Renderer(BaseComponent):
 
     def register_render_as(self, component_object_id: int):
         self.render_objects[component_object_id] = RenderObject(make_empty_surface(), (0,0), 0)
-
-    def update(self, engine):
-        return super().update(engine)

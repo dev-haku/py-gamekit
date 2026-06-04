@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame
 
-from game.package.base_object.component import BaseComponent
+from game.package.base_object.base_component import BaseComponent
 
 @dataclass
 class Hitbox:
@@ -20,24 +20,25 @@ class Collider(BaseComponent):
         self.is_collision_enabled = True
         self.is_render_debug = True
 
-    def start(self, engine):
-        self.worldobjects = engine.current_scene.world
+    def start(self):
+        self.worldobjects = self.engine.current_scene.world
 
-        self.transform = self.parent_gameobject.get_component("Transform")
-        self.renderer = self.parent_gameobject.get_component("Renderer")
+        self.transform = self.parent.get_component("Transform")
+        self.renderer = self.parent.get_component("Renderer")
         self.renderer.register_render_as(id(self))
 
         self.last_pos = self.transform.position
 
-        return super().start(engine)
+        return super().start()
 
-    def update(self, engine):
-        if self.is_collision_enabled:
-            self._resolve_collision()
+    def update(self):
         if self.is_render_debug:
             self._update_debug_surface()
+        if self.is_collision_enabled:
+            self._resolve_collision()
+        
 
-        return super().update(engine)
+        return super().update()
 
     def add_hitbox(
             self, 
@@ -54,7 +55,7 @@ class Collider(BaseComponent):
            my_rect = self._create_rect(self.transform, my_hitbox)
            
            for target_worldobject in self.worldobjects:
-                if target_worldobject is self.parent_gameobject:
+                if target_worldobject is self.parent:
                     continue
 
                 target_collider = target_worldobject.get_component("Collider")

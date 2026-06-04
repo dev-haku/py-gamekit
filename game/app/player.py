@@ -2,12 +2,8 @@ import pygame
 import json
 
 from game import paths
-from game.package.base_object.worldobject import BaseWorldobject
-from game.package.base_object.component import BaseComponent
-from game.package.component import Renderer
-from game.package.component import Animator
-from game.package.component import Collider
-
+from game.package.base_object import BaseWorldobject, BaseComponent
+from game.package.component import Renderer, Animator, Collider
 
 class Player(BaseWorldobject):
 
@@ -57,22 +53,22 @@ class State(BaseComponent):
         
 class Controller(BaseComponent):
 
-    def start(self, engine):
-        self.transform = self.parent_gameobject.get_component("Transform")
-        self.renderer = self.parent_gameobject.get_component("Renderer")
-        self.animator: Animator = self.parent_gameobject.get_component("Animator")
-        self.collider: Collider = self.parent_gameobject.get_component("Collider")
-        self.state: State = self.parent_gameobject.get_component("State")
+    def start(self):
+        self.transform = self.parent.get_component("Transform")
+        self.renderer = self.parent.get_component("Renderer")
+        self.animator: Animator = self.parent.get_component("Animator")
+        self.collider: Collider = self.parent.get_component("Collider")
+        self.state: State = self.parent.get_component("State")
 
-        self.camera = engine.current_scene.get_worldobject("Camera")
+        self.camera = self.engine.current_scene.camera
 
         self.stack = [0,0,0,0]
 
-        return super().start(engine)
+        return super().start()
     
-    def update(self, engine):
-        keys = engine.input_status.keys
-        dt = engine.delta_time
+    def update(self):
+        keys = self.engine.input_status.keys
+        dt = self.engine.delta_time
 
         camera_transform = self.camera.get_component("Transform")
 
@@ -114,9 +110,8 @@ class Controller(BaseComponent):
             scale.x += 1
             scale.y += 1
 
-
         self.transform.scale = scale 
 
         camera_transform.position = self.transform.position
         
-        return super().update(engine)
+        return super().update()

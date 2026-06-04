@@ -1,6 +1,6 @@
 import pygame
 
-from game.package.base_object.worldobject import BaseWorldobject
+from game.package.base_object.base_worldobject import BaseWorldobject
 from game.package.component.renderer import Renderer
 from game.package.component.sprite import Sprite
 from game.package.component.collider import Collider
@@ -29,5 +29,5 @@ class Square(BaseWorldobject):
         self.add_component(sprite)
 
         collider = Collider()
-        collider.add_hitbox((0,0),(8,8), (255,255,255))
+        collider.add_hitbox((0,0),(8,8), (255,0,0))
         self.add_component(collider)

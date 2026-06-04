@@ -1,6 +1,4 @@
-from dataclasses import dataclass
 import pygame
-import time
 
 from game import config
 
@@ -81,10 +79,11 @@ class Engine:
 
         scene = self.current_scene
         if not scene.is_started:  
-            scene.start(self)
+            scene.engine = self
+            scene.start()
             scene.is_started = True
 
-        scene.update(self)
+        scene.update()
 
     def _process_input_events(self):
 
@@ -111,15 +110,16 @@ class Engine:
                                  
     def _draw(self):
         if self.current_scene.is_started:
-            self.current_scene.draw(self)
+            self.current_scene.draw()
 
         scaled = pygame.transform.scale(self.screen, self.window.get_size())
         self.window.blit(scaled, (0,0))
 
         pygame.display.flip()
 
-@dataclass
+
 class InputStatus:
-    keys = {}
-    mouse_position = (0,0)
-    mouse_buttons = [False] * 5
+    def __init__(self):
+        self.keys = {}
+        self.mouse_position = (0,0)
+        self.mouse_buttons = [False] * 5

@@ -14,23 +14,30 @@ class BaseScene:
 
         self.camera = self.add_worldobject(Camera())
 
-    def start(self, engine):
+        self.engine = None
+
+    def start(self):
         pass
 
-    def update(self, engine):
-        for group in (self.world, self.canvas):
-            for gameobject in group:
-                for component in gameobject.components:
-                    if component.is_started == False:
-                        component.is_started = True
-                        component.start(engine)
+    def update(self):
+        for gameobjects in (self.world, self.canvas):
+            for go in gameobjects:
+                if go.is_started == False:
+                        go.engine = self.engine
+                        go.start()
+                        go.is_started = True
+
+                for comp in go.components.values():
+                    if comp.is_started == False:
+                        comp.engine = self.engine
+                        comp.start()
+                        comp.is_started = True
                         
-                    component.update(engine)
+                    comp.update()
 
-    def draw(self, engine):
-        self._draw_worldobjects(engine)
-        self._draw_uiobjects(engine)
-
+    def draw(self):
+        self._draw_worldobjects()
+        self._draw_uiobjects()
 
     def add_worldobject(self, game_object):
         self.world.append(game_object)
@@ -40,33 +47,26 @@ class BaseScene:
         self.canvas.append(game_object)
         return game_object
 
-    def get_worldobject(self, game_object_name):
+    def get_worldobject(self, object_id):
         for game_object in self.world:
-            if game_object.__class__.__name__ == game_object_name:
+            if id(game_object) == object_id:
                 return game_object
             
         return None
 
-    def _draw_worldobjects(self, engine):
+    def _draw_worldobjects(self):
 
-        screen_size = engine.screen.get_size()
+        screen_size = self.engine.screen.get_size()
 
         camera = self.camera
-        if not _get_state(camera):
+        if not get_state(camera):
             return
 
         camera_transform = camera.get_component("Transform")
-        if not _get_state(camera_transform):
+        if not get_state(camera_transform):
             return
         
-        render_objects = [
-            render_object
-            for wo in self.world
-            if _get_state(wo)
-            if _get_state(wo.get_component("Renderer"))
-            for render_object in wo.get_component("Renderer").render_objects.values()
-        ]
-
+        render_objects = create_render_objects(self.world)
         render_objects.sort(key=lambda x: x.layer)
 
         for render in render_objects:
@@ -78,25 +78,18 @@ class BaseScene:
                 (render.position[1] - camera_transform.position.y) + (screen_size[1] // 2)
             )
 
-            engine.screen.blit(
+            self.engine.screen.blit(
                 draw_surface,
                 draw_position
             )
 
-    def _draw_uiobjects(self, engine):
+    def _draw_uiobjects(self):
 
-        screen_size = engine.screen.get_size()
+        screen_size = self.engine.screen.get_size()
 
-        render_objects = [
-            render_object
-            for uo in self.canvas
-            if _get_state(uo)
-            if _get_state(uo.get_component("Renderer"))
-            for render_object in uo.get_component("Renderer").render_objects.values()
-        ]
-
+        render_objects = create_render_objects(self.canvas)
         render_objects.sort(key=lambda x: x.layer)
-            
+
         for render in render_objects:
             draw_surface: pygame.Surface = render.surface
 
@@ -108,9 +101,18 @@ class BaseScene:
                 (screen_size[1] * position_ratio[1] - surface_size[1] // 2)
             )
 
-            engine.screen.blit(draw_surface, draw_position)
+            self.engine.screen.blit(draw_surface, draw_position)
 
-def _get_state(object):
+def create_render_objects(gameobjects):
+    return  [
+        render_object
+        for go in gameobjects
+        if get_state(go)
+        if get_state(go.get_component("Renderer"))
+        for render_object in go.get_component("Renderer").render_objects.values()
+    ]
+
+def get_state(object):
 
     if object is None:
         return False

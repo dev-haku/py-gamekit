@@ -1,6 +1,6 @@
 import pygame
 
-from game.package.base_object.component import BaseComponent
+from game.package.base_object.base_component import BaseComponent
 
 
 class Sprite(BaseComponent):
@@ -9,29 +9,30 @@ class Sprite(BaseComponent):
         self._original_surface: pygame.Surface | None = None
         self._parent_scale_cache: tuple[float, float] = (0.0, 0.0)
 
-    def start(self, engine):
-        a = self.parent_gameobject.get_component("Transform")
-        b = self.parent_gameobject.get_component("RectTransform")
-        if a is not None:
-            self._parent_transform = a
+    def start(self):
+        if self.parent.get_component("Transform") is not None:
+            self.transform = self.parent.get_component("Transform")
         else:
-            self._parent_transform = b
-
-        self.renderer = self.parent_gameobject.get_component("Renderer")
+            self.transform = self.parent.get_component("RectTransform")
+            
+        self.renderer = self.parent.get_component("Renderer")
         self.renderer.register_render_as(id(self))
         
+        return super().start()
 
-        return super().start(engine)
-
-    def update(self, engine):
+    def update(self):
         if self._original_surface is None:
-            return super().update(engine)
+            return super().update()
+
+        obj = self.renderer.render_objects[id(self)]
+        obj.position = tuple(self.transform.position)
+        obj.layer = self.transform.layer
         
-        current_scale: tuple =  self._parent_transform.scale.xy
+        current_scale: tuple =  self.transform.scale.xy
         if current_scale != self._parent_scale_cache:
             self._scale_surface(current_scale)
 
-        return super().update(engine)
+        return super().update()
     
     def set_surface(self, surface: pygame.Surface) -> None:
         self._original_surface = surface
@@ -43,7 +44,6 @@ class Sprite(BaseComponent):
         
         obj = self.renderer.render_objects[id(self)]
         obj.surface = pygame.transform.scale(self._original_surface, (w * scale_x, h * scale_y))
-        obj.position = tuple(self._parent_transform.position.xy)
-        obj.layer = self._parent_transform.layer
+
 
         self._parent_scale_cache = scale

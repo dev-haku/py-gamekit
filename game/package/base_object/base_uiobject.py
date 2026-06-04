@@ -1,4 +1,4 @@
-from game.package.base_object.gameobject import BaseGameobject
+from game.package.base_object.base_gameobject import BaseGameobject
 from game.package.component.transform import RectTransform
 
 class BaseUiobject(BaseGameobject):

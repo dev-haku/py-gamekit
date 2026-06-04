@@ -3,12 +3,14 @@ class BaseComponent:
         self.active: bool = True
         self._tags: list[str] = []
         self.is_started: bool = False
-        self.parent_gameobject = None
+        self.parent = None
 
-    def start(self, engine):
+        self.engine = None
+
+    def start(self):
         pass
 
-    def update(self, engine):
+    def update(self):
         pass
 
     @property

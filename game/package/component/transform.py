@@ -1,5 +1,5 @@
 from pygame import Vector2
-from game.package.base_object.component import BaseComponent
+from game.package.base_object.base_component import BaseComponent
 
 class Transform(BaseComponent):
     def __init__(self):

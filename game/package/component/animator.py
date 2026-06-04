@@ -1,6 +1,6 @@
 import pygame
 
-from game.package.base_object.component import BaseComponent
+from game.package.base_object.base_component import BaseComponent
 
 class AnimationData:
 
@@ -84,17 +84,18 @@ class Animator(BaseComponent):
         self.animations: list[AnimationData] = []
         self.animation_player: AnimationPlayer = AnimationPlayer()
 
-
-    def start(self, engine) -> None:
-        self.transform = self.parent_gameobject.get_component("Transform")
-        self.renderer = self.parent_gameobject.get_component("Renderer")
+    def start(self):
+        self.transform = self.parent.get_component("Transform")
+        self.renderer = self.parent.get_component("Renderer")
         self.renderer.register_render_as(id(self))
     
         if len(self.animations) >= 1:
             self.animation_player.animation = self.animations[0]
+            
+        return super().start()
 
-    def update(self, engine):
-        self.animation_player.update(engine.delta_time)
+    def update(self):
+        self.animation_player.update(self.engine.delta_time)
 
         frames = self.animation_player.animation.get_scaled_frames(tuple(self.transform.scale.xy))
         frame_index = self.animation_player.frame_index
@@ -103,6 +104,8 @@ class Animator(BaseComponent):
         obj.surface = frames[frame_index]
         obj.position = tuple(self.transform.position.xy)
         obj.layer = self.transform.layer
+
+        return super().update()
 
     def add_animation(
         self,
