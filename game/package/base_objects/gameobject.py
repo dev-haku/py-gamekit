@@ -1,7 +1,7 @@
 import time
-from game.package.component.destory import Destroy
 
-class BaseGameobject:
+class Gameobject:
+    
     def __init__(self):
         self.active: bool = True
         self.is_started: bool = False
@@ -11,11 +11,12 @@ class BaseGameobject:
         
         self.created_timestamp: float = time.time()
 
-        self.add_component(Destroy())
-
         self.engine = None
 
     def start(self):
+        pass
+
+    def update(self):
         pass
     
     def add_tag(self, name):
@@ -44,4 +45,12 @@ class BaseGameobject:
         return None
     
     def destroy(self):
-        self.get_component("Destroy").do_destroy = True
+        for gameobject in self.engine.current_scene.world:
+            if self == gameobject:
+                self.engine.current_scene.world.remove(gameobject)
+                return
+
+        for gameobject in self.engine.current_scene.world:
+            if self == gameobject:
+                self.engine.current_scene.world.remove(gameobject)
+                return

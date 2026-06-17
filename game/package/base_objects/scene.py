@@ -1,9 +1,8 @@
 import pygame
+from game.package.gameobjects.worldobjects.camera import Camera
 
-from game.package.gameobject.worldobject.camera import Camera
 
-
-class BaseScene:
+class Scene:
     
     def __init__(self):
         self.active = True
@@ -12,7 +11,8 @@ class BaseScene:
         self.world = [] 
         self.canvas = []
 
-        self.camera = self.add_worldobject(Camera())
+        self.camera = Camera()
+        self.add_worldobject(self.camera)
 
         self.engine = None
 
@@ -23,9 +23,11 @@ class BaseScene:
         for gameobjects in (self.world, self.canvas):
             for go in gameobjects:
                 if go.is_started == False:
-                        go.engine = self.engine
-                        go.start()
-                        go.is_started = True
+                    go.engine = self.engine
+                    go.start()
+                    go.is_started = True
+                
+                go.update()
 
                 for comp in go.components.values():
                     if comp.is_started == False:
@@ -56,8 +58,6 @@ class BaseScene:
 
     def _draw_worldobjects(self):
 
-        screen_size = self.engine.screen.get_size()
-
         camera = self.camera
         if not get_state(camera):
             return
@@ -66,16 +66,16 @@ class BaseScene:
         if not get_state(camera_transform):
             return
         
-        render_objects = create_render_objects(self.world)
-        render_objects.sort(key=lambda x: x.layer)
+        render_data_list = create_render_data_list(self.world)
+        render_data_list.sort(key=lambda x: x.layer)
 
-        for render in render_objects:
+        for render in render_data_list:
 
             draw_surface = render.surface
 
             draw_position = (
-                (render.position[0] - camera_transform.position.x) + (screen_size[0] // 2),
-                (render.position[1] - camera_transform.position.y) + (screen_size[1] // 2)
+                (render.position[0] - camera_transform.position.x) + camera.offset_position.x,
+                (render.position[1] - camera_transform.position.y) + camera.offset_position.y
             )
 
             self.engine.screen.blit(
@@ -87,29 +87,30 @@ class BaseScene:
 
         screen_size = self.engine.screen.get_size()
 
-        render_objects = create_render_objects(self.canvas)
-        render_objects.sort(key=lambda x: x.layer)
+        render_data_list = create_render_data_list(self.canvas)
+        render_data_list.sort(key=lambda x: x.layer)
 
-        for render in render_objects:
+
+        for render in render_data_list:
             draw_surface: pygame.Surface = render.surface
 
             position_ratio = render.position
             surface_size = draw_surface.get_size()
 
             draw_position = (
-                (screen_size[0] * position_ratio[0] - surface_size[0] // 2),
-                (screen_size[1] * position_ratio[1] - surface_size[1] // 2)
+                (screen_size[0] * position_ratio[0]) - (surface_size[0] // 2),
+                (screen_size[1] * position_ratio[1]) - (surface_size[1] // 2)
             )
 
             self.engine.screen.blit(draw_surface, draw_position)
 
-def create_render_objects(gameobjects):
+def create_render_data_list(gameobjects):
     return  [
-        render_object
+        comp.render_data
         for go in gameobjects
         if get_state(go)
-        if get_state(go.get_component("Renderer"))
-        for render_object in go.get_component("Renderer").render_objects.values()
+        for comp in go.components.values()
+        if hasattr(comp, "render_data")
     ]
 
 def get_state(object):

@@ -5,7 +5,7 @@
 
         "fps":10,
 
-        "spritesheet_image_path" : "./player/player_animation_spritesheet.png",
+        "spritesheet_image_path" : "./player/animation_spritesheet.png",
         "frames":[
             [0,0,14,14],
             [1,0,14,14]
@@ -17,7 +17,7 @@
 
         "fps":10,
 
-        "spritesheet_image_path" : "./player/player_animation_spritesheet.png",
+        "spritesheet_image_path" : "./player/animation_spritesheet.png",
         "frames":[
             [0,1,14,14],
             [1,1,14,14]
@@ -29,7 +29,7 @@
 
         "fps":10,
 
-        "spritesheet_image_path" : "./player/player_animation_spritesheet.png",
+        "spritesheet_image_path" : "./player/animation_spritesheet.png",
         "frames":[
             [0,2,14,14],
             [1,2,14,14]
@@ -41,7 +41,7 @@
 
         "fps":10,
 
-        "spritesheet_image_path" : "./player/player_animation_spritesheet.png",
+        "spritesheet_image_path" : "./player/animation_spritesheet.png",
         "frames":[
             [0,3,14,14],
             [1,3,14,14]

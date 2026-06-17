@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 import pygame
 
-from game.package.base_object.base_component import BaseComponent
+from game.package.core.render_data import RenderData
+from game.package.base_objects.component import Component
 
 @dataclass
 class Hitbox:
@@ -10,33 +11,31 @@ class Hitbox:
     color: tuple[int,int,int]
         
 
-class Collider(BaseComponent):
+class Collider(Component):
     def __init__(self):
         super().__init__()
         self.hitboxes = []
         self.last_pos = (0,0)
-        self.debug_surface = pygame.Surface((1,1), pygame.SRCALPHA)
 
         self.is_collision_enabled = True
-        self.is_render_debug = True
+
+        self.render_data = RenderData()
 
     def start(self):
         self.worldobjects = self.engine.current_scene.world
 
         self.transform = self.parent.get_component("Transform")
-        self.renderer = self.parent.get_component("Renderer")
-        self.renderer.register_render_as(id(self))
 
         self.last_pos = self.transform.position
 
         return super().start()
 
     def update(self):
-        if self.is_render_debug:
+        if self.engine.debug_settings["show_colliders"]:
             self._update_debug_surface()
+
         if self.is_collision_enabled:
             self._resolve_collision()
-        
 
         return super().update()
 
@@ -44,7 +43,7 @@ class Collider(BaseComponent):
             self, 
             offset_position: tuple[float,float], 
             size: tuple[float,float], 
-            color: tuple[float,float,float]
+            color: tuple[float,float,float,float]
         ):
         color = color or (255,255,255)
         self.hitboxes.append(Hitbox(offset_position, size, color))
@@ -102,6 +101,7 @@ class Collider(BaseComponent):
         position = self.transform.position
         scale = self.transform.scale
 
+
         scaled_hitboxes = [
             (
                 hitbox.offset_position[0] * scale[0],
@@ -132,17 +132,16 @@ class Collider(BaseComponent):
         w = right - left
         h = bottom - top
 
-        combined_surface = pygame.Surface((w, h))
-        combined_surface.fill((255,255,255))
+        combined_surface = pygame.Surface((w, h), pygame.SRCALPHA)
+        combined_surface.fill((255,255,255,0))
 
 
         for hitbox in scaled_hitboxes:
-            hitbox_surface = pygame.Surface((hitbox[2],hitbox[3]))
+            hitbox_surface = pygame.Surface((hitbox[2],hitbox[3]), pygame.SRCALPHA)
             hitbox_surface.fill(hitbox[4])
             combined_surface.blit(hitbox_surface, (hitbox[0] - x, hitbox[1] - y))
 
-        obj = self.renderer.render_objects[id(self)]
-        obj.surface = combined_surface
-        obj.position = (position.x + x, position.y + y)
-        obj.layer = self.transform.layer -1
+        self.render_data.surface = combined_surface
+        self.render_data.position = (position.x + x, position.y + y)
+        self.render_data.layer = self.transform.layer +1
 

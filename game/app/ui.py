@@ -1,10 +1,9 @@
 import pygame
 
-from game.package.base_object import BaseUiobject
-from game.package.component import Renderer
-from game.package.component import Sprite
+from game.package.base_objects import Uiobject
+from game.package.components import SpriteRenderer
 
-class Image(BaseUiobject):
+class Image(Uiobject):
     def __init__(self, position, size, scale, layer):
         super().__init__()
 
@@ -12,10 +11,10 @@ class Image(BaseUiobject):
         transform.position = position
         transform.scale = scale
 
-        self.add_component(Renderer())
-
-        sprite = Sprite()
+        sprite = SpriteRenderer()
         surface = pygame.Surface(size)
         surface.fill((255,255,255))
         sprite.set_surface(surface)
+        self.add_component(sprite)
+
         self.add_component(sprite)

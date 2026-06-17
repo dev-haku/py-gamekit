@@ -2,10 +2,10 @@ import pygame
 import json
 
 from game import paths
-from game.package.base_object import BaseWorldobject, BaseComponent
-from game.package.component import Renderer, Animator, Collider
+from game.package.base_objects import Worldobject, Component
+from game.package.components import SpriteRenderer, Animator, Collider
 
-class Player(BaseWorldobject):
+class Player(Worldobject):
 
     def __init__(self, position:tuple, scale:tuple, layer:int,):
         super().__init__()
@@ -15,11 +15,11 @@ class Player(BaseWorldobject):
         transform.scale = scale
         transform.layer = layer
 
-        self.add_component(Renderer())
+        self.add_component(SpriteRenderer())
 
         animator = Animator()
 
-        with open(paths.APP_ASSET_DIR / "player/player_animations.json", "r") as f:
+        with open(paths.APP_ASSET_DIR / "player/animations_data.json", "r") as f:
             data = json.load(f)
 
         for name, info in data.items():
@@ -37,7 +37,7 @@ class Player(BaseWorldobject):
 
         collider = Collider()
         collider.is_collision_enabled = False
-        collider.add_hitbox((-0,-0), (14,14), (255,0,0,200))
+        collider.add_hitbox((-0,-0), (14,14), (0,255,0,100))
         self.add_component(collider)
 
         state = State() 
@@ -47,22 +47,20 @@ class Player(BaseWorldobject):
         self.add_component(Controller())
         
 
-class State(BaseComponent):
+class State(Component):
     def __init__(self):
         super().__init__()
         
-class Controller(BaseComponent):
+class Controller(Component):
 
     def start(self):
         self.transform = self.parent.get_component("Transform")
-        self.renderer = self.parent.get_component("Renderer")
+        self.sprite_renderer = self.parent.get_component("SpriteRenderer")
         self.animator: Animator = self.parent.get_component("Animator")
         self.collider: Collider = self.parent.get_component("Collider")
         self.state: State = self.parent.get_component("State")
 
         self.camera = self.engine.current_scene.camera
-
-        self.stack = [0,0,0,0]
 
         return super().start()
     
@@ -72,12 +70,10 @@ class Controller(BaseComponent):
 
         camera_transform = self.camera.get_component("Transform")
 
-        scale =  self.transform.scale
-
-        surface_size = self.renderer.render_objects[id(self.animator)].surface.get_size()
+        w, h = self.animator.animation_player.get_current_frame().get_size()
         scaled_size = (
-            surface_size[0] * scale.x, 
-            surface_size[1] * scale.y
+            w * self.transform.scale.x, 
+            h * self.transform.scale.y
         )
 
         state = self.state
@@ -106,12 +102,10 @@ class Controller(BaseComponent):
             if self.collider.is_colliding():
                 self.transform.position.x -= (scaled_size[0] / 2) * state.speed * dt
 
-        if keys.get("1", False):
-            scale.x += 1
-            scale.y += 1
 
-        self.transform.scale = scale 
-
-        camera_transform.position = self.transform.position
+        camera_transform.position = (
+            self.transform.position.x + (scaled_size[0] // 2),
+            self.transform.position.y + scaled_size[1] // 2
+        )
         
         return super().update()

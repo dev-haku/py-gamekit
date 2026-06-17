@@ -1,16 +1,28 @@
-from game.paths import PACKAGE_ASSET_DIR
+from game import paths
 from game.app.game_scene import GameScene
 
 game = {
-    "name" : "MyGame",
+    "name" : "Mygame",
     "version" : "0.1",
-    "icon_image_path" : PACKAGE_ASSET_DIR / "img/icon.ico",
+    "icon_image_path" : paths.DEFAULT_ICON_IMAGE,
     
-    "window_size" : [960,540],
-    "screen_size" : [960,540],
+    "window_size" : [640, 480],
+    "screen_size" : [640, 480],
 
     "max_tps" : 30,
     "max_fps" : 30,
 
-    "initial_scene_class" : GameScene,
+    "initial_scene_index" : 0,
 }
+
+global_values = {
+}
+
+debug = {
+    "show_colliders" : False,
+    "print_key_events" : False
+}
+
+scenes = [
+    GameScene,
+]

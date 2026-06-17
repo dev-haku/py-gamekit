@@ -1,4 +1,5 @@
-class BaseComponent:
+class Component:
+    
     def __init__(self):
         self.active: bool = True
         self._tags: list[str] = []
