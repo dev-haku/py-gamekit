@@ -14,7 +14,7 @@ class GameScene(Scene):
         player = Player((-100,0), (4,4),4)
         self.add_worldobject(player)
 
-        square = Square((0,0), (100,100), 1, (0,0,255))
+        square = Square((0,0), (100,100), 1, (0,0,255), (0,255,0))
         self.add_worldobject(square)
 
         image = Image((0.15,0.9), (100,50), (1,1), 1)
