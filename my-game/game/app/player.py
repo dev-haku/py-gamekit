@@ -2,10 +2,16 @@ import pygame
 import json
 
 from game import paths
-from game.package.base_objects import Worldobject, Component
-from game.package.components import SpriteRenderer, Animator, Collider
+from game.package import (
+    Gameworldobject,
+    Component, 
+    SpriteRenderer, 
+    Animator, 
+    Collider
+)
 
-class Player(Worldobject):
+
+class Player(Gameworldobject):
 
     def __init__(self, position:tuple, scale:tuple, layer:int,):
         super().__init__()

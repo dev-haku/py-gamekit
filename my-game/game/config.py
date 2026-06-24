@@ -15,6 +15,10 @@ game = {
     "initial_scene_index" : 0,
 }
 
+scenes = [
+    GameScene,
+]
+
 global_values = {
 }
 
@@ -22,7 +26,3 @@ debug = {
     "show_colliders" : False,
     "print_key_events" : False
 }
-
-scenes = [
-    GameScene,
-]

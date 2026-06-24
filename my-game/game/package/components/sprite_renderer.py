@@ -2,10 +2,10 @@ import pygame
 from pathlib import Path
 
 from game.package.core.render_data import RenderData
-from game.package.base_objects.component import Component
-from game.package.components import Transform, RectTransform
-
+from game.package.core.component import Component
+from game.package.components.transform import Transform, RectTransform
 from game.package.util.make_empty_surface import make_empty_surface
+
 
 class SpriteRenderer(Component):
 
@@ -13,7 +13,7 @@ class SpriteRenderer(Component):
         super().__init__()
 
         self.original_surface: pygame.Surface = make_empty_surface()
-        self.flag = False
+        self.flag = True
         self.render_data = RenderData()
 
     def start(self):

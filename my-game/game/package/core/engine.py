@@ -16,8 +16,6 @@ class Engine:
         pygame.display.set_caption(config.game["name"])
         pygame.display.set_icon(pygame.image.load(config.game["icon_image_path"]))
         
-        self.running = False
-
         self.screen = pygame.Surface(config.game["screen_size"])
 
         self.scenes = config.scenes
@@ -28,15 +26,17 @@ class Engine:
         self.max_tps = config.game["max_tps"]
         self.max_fps = config.game["max_fps"]
 
+        self.running = False
+
         self.delta_time = 0
+
+        self.global_values = config.global_values
 
         self.input_status = InputStatus()
 
         self.scheduler = Scheduler()
 
         self.debug_settings = config.debug
-
-        self.global_values = config.global_values
 
     def start(self):
         self.running = True
@@ -129,14 +129,23 @@ class Engine:
                 self.input_status.mouse_buttons = [False] * 5
                                  
     def _draw(self):
-        self.screen.fill((0, 0, 0))
+        screen = self.screen
+        screen.fill((0, 0, 0))
 
-        scene = self.current_scene
-        if scene.active and scene.is_started:
-            scene.draw()
+        if (
+            self.current_scene.active and 
+            self.current_scene.is_started
+            ):
 
-        scaled = pygame.transform.scale(self.screen, self.window.get_size())
-        self.window.blit(scaled, (0,0))
+            scaled_screen = pygame.transform.scale(
+                self.current_scene.render(screen), 
+                self.window.get_size()
+            )
+
+            self.window.blit(
+                scaled_screen, 
+                (0,0)
+            )
 
         pygame.display.flip()
 

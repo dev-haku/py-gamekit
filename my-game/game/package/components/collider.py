@@ -2,7 +2,8 @@ from dataclasses import dataclass
 import pygame
 
 from game.package.core.render_data import RenderData
-from game.package.base_objects.component import Component
+from game.package.core.component import Component
+
 
 @dataclass
 class Hitbox:

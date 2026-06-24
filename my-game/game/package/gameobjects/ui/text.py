@@ -1,10 +1,10 @@
 import pygame
 
-from game.package.base_objects import Uiobject
-from game.package.components import SpriteRenderer
+from game.package.core.gameobject import Gameuiobject
+from game.package.components.sprite_renderer import SpriteRenderer
 
 
-class Text(Uiobject):
+class Text(Gameuiobject):
     def __init__(
         self, 
         position: tuple[float, float], 
