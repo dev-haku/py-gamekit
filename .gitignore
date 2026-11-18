@@ -220,3 +220,7 @@ __marimo__/
 
 # original dir
 build/
+
+.obsidian/
+
+.DS_Store

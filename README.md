@@ -1,4 +1,4 @@
-# py-gamekit
+# PyGamekit
 
 ![](https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge&labelColor=gray)
 

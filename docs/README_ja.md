@@ -1,4 +1,4 @@
-# py-gamekit
+# PyGamekit
 
 [English](../README.md) |
 
