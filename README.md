@@ -1,8 +1,8 @@
 # PyGamekit
 
-![](https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge&labelColor=gray)
+![Status](https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge&labelColor=gray)
 
-[日本語ドキュメント](./docs/README_ja.md)
+[日本語ドキュメント](./docs/README.ja.md)
 
 ## About
 
@@ -10,10 +10,9 @@ This is a Python-based game framework for creating 2D games.
 
 ## Getting Started
 
-
 ### Install Python
 
-Install Python 3.13.9.
+PyGamekit requires Python 3.13.9.
 
 ### Clone the Repository
 
@@ -22,29 +21,44 @@ git clone https://github.com/dev-haku/py-gamekit.git
 cd py-gamekit
 ```
 
+### Create a Virtual Environment
+
+**Windows**
+
+```bash
+py -3.13 -m venv .venv
+.venv\Scripts\activate
+```
+
+**macOS / Linux**
+
+```bash
+python3.13 -m venv .venv
+source .venv/bin/activate
+```
+
 ### Install Dependencies
 
 ```bash
-python -3.13 -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-### Run Your Game
+## Running the Game
 
 ```bash
-python run.py
+python ./run.py
 ```
-
 
 ## Building
 
 To build a standalone executable, PyInstaller is required.
 
-```bash
-python build.py
-```
+The build output will be generated in the `build/` directory.
 
-The build output will be generated in the build/ directory.
+```bash
+python ./build.py
+```
 
 ## License
 
-Check [LICENSE](./LICENSE) file for details.
+See the [LICENSE](./LICENSE) file for details.
