@@ -1,9 +1,11 @@
-import json, pygame
+import json
+
+import pygame
 
 
 def get_animation_data(aniamtions_data_json_path, animation_name) -> list[dict[str,list]]:
 
-    with open(aniamtions_data_json_path, "r") as f:
+    with open(aniamtions_data_json_path) as f:
         animations_data = json.load(f)
 
     anim_data = animations_data[animation_name]

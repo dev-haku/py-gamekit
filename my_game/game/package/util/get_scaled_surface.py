@@ -1,5 +1,7 @@
 import functools
+
 import pygame
+
 
 @functools.cache
 def get_scaled_surface(surface: pygame.Surface, scale: tuple[float,float]):

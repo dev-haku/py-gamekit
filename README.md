@@ -6,13 +6,13 @@
 
 ## About
 
-This is a Python-based game framework for creating 2D games.
+PyGamekit is a Python-based game framework for developing 2D games.
 
 ## Getting Started
 
-### Install Python
+### Install 
 
-PyGamekit requires Python 3.13.9.
+- Python 3.13.9
 
 ### Clone the Repository
 
@@ -46,17 +46,17 @@ python -m pip install -r requirements.txt
 ## Running the Game
 
 ```bash
-python ./run.py
+python my_game/main.py
 ```
 
 ## Building
 
-To build a standalone executable, PyInstaller is required.
+PyInstaller is used to build standalone applications.
 
-The build output will be generated in the `build/` directory.
+Build artifacts are generated in the `build/` directory.
 
 ```bash
-python ./build.py
+python build.py
 ```
 
 ## License

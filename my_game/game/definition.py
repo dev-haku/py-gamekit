@@ -1,6 +1,5 @@
 from .app.game_scene import GameScene
 
-
 scenes = [
     GameScene,
 ]

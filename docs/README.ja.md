@@ -8,9 +8,9 @@ PyGamekit は、2Dゲーム開発のための Python ベースのゲームフレ
 
 ## はじめに
 
-### Python のインストール
+### 必要環境
 
-PyGamekit には Python 3.13.9 が必要です。
+- Python 3.13.9
 
 ### リポジトリのクローン
 
@@ -44,17 +44,17 @@ python -m pip install -r requirements.txt
 ## ゲームの実行
 
 ```bash
-python ./run.py
+python my_game/main.py
 ```
 
 ## ビルド
 
-PyInstaller を使用して、単体で実行可能なファイルをビルドできます。
+PyInstaller を使用して、単体で実行可能なアプリケーションをビルドできます。
 
-ビルドされたファイルは `build/` ディレクトリに出力されます。
+ビルド成果物は `build/` ディレクトリに出力されます。
 
 ```bash
-python ./build.py
+python build.py
 ```
 
 ## ライセンス

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+
 import pygame
 
-from .render_data import RenderData
 from .collision_system import CollisionSystem
 from .component import Component
+from .render_data import RenderData
 from .transform import Transform
 
 
@@ -15,18 +16,21 @@ class Hitbox:
         
 
 class Collider(Component):
-    def __init__(self, engine, scene, parent, kwargs):
-        super().__init__(engine, scene, parent, kwargs)
-        
-        self.hitboxes: list[Hitbox] = []
-        self.last_pos: tuple[float,float] = (0,0)
 
-        self.parent_transform: Transform = self.parent.get_component("Transform")
+    def __init__(self, engine, scene, parent) -> None:
+        super().__init__(engine, scene, parent)
+        
+        self._hitboxes: list[Hitbox] = []
+
+        self._parent_transform: Transform = self.parent.get_component("Transform")
+        self._collider_system: CollisionSystem = self.scene.get_gameobject("CollisionSystem")
 
         self.render_data = RenderData()
-        self.render_data.transform_type = self.parent_transform.__class__.__name__
+        self.render_data.transform_type = self._parent_transform.__class__.__name__
 
-        self.collider_system: CollisionSystem = self.scene.get_gameobject("CollisionSystem")
+    @property
+    def hitboxes(self) -> list[Hitbox]:
+        return self._hitboxes.copy()
 
     def add_hitbox(
             self, 
@@ -34,22 +38,22 @@ class Collider(Component):
             size: tuple[float,float], 
             color: tuple[float,float,float,float] = (0,255,0, 200)
         ):
-        self.hitboxes.append(Hitbox(offset_position, size, color))
+        self._hitboxes.append(Hitbox(offset_position, size, color))
 
     def clear_all_hitboxes(self):
-        self.hitboxes.clear()
+        self._hitboxes.clear()
 
     def is_colliding(self):
-        if len(self.collider_system.get_colliding_colliders(self)) >= 1:
+        if len(self._collider_system.get_colliding_colliders(self)) >= 1:
             return True
         else:
             return False
     
     def get_colliding_gameobjects(self):
-            return [c.parent for c in self.collider_system.get_colliding_colliders(self)]
-    
+            return [collider.parent for collider in self._collider_system.get_colliding_colliders(self)]
                 
     def update(self):
+        self.render_data.active = False
         if self.engine.debug_settings["show_colliders"]:
             self._update_debug_surface()
 
@@ -57,9 +61,8 @@ class Collider(Component):
     
     def _update_debug_surface(self) -> None:
 
-        position = self.parent_transform.position
-        scale = self.parent_transform.scale
-
+        position = self._parent_transform.position
+        scale = self._parent_transform.scale
 
         scaled_hitboxes = [
             (
@@ -93,12 +96,12 @@ class Collider(Component):
         combined_surface = pygame.Surface((w, h), pygame.SRCALPHA)
         combined_surface.fill((255,255,255,0))
 
-
         for hitbox in scaled_hitboxes:
             hitbox_surface = pygame.Surface((hitbox[2],hitbox[3]), pygame.SRCALPHA)
             hitbox_surface.fill(hitbox[4])
             combined_surface.blit(hitbox_surface, (hitbox[0] - x, hitbox[1] - y))
 
+        self.render_data.active = True
         self.render_data.surface = combined_surface
         self.render_data.position.xy = (position.x + x, position.y + y)
-        self.render_data.layer = self.parent_transform.layer +1
+        self.render_data.layer = self._parent_transform.layer +1
