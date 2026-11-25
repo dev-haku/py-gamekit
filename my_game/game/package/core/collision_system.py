@@ -7,8 +7,8 @@ import pygame
 from .gameobject import Gameobject
 
 if TYPE_CHECKING:
-    from .collider import Collider
-    from .transform import Transform
+    from ..components.collider import Collider
+    from ..components.transform import Transform
    
 
 class CollisionSystem(Gameobject):

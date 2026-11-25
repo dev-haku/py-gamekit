@@ -1,8 +1,8 @@
 import pygame
 
 from ..core.gameobject import Gameobject
-from ..core.sprite_renderer import SpriteRenderer
-from ..core.transform import RectTransform
+from ..components.sprite_renderer import SpriteRenderer
+from ..components.transform import RectTransform
 
 
 class Image(Gameobject):

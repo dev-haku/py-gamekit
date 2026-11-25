@@ -1,7 +1,7 @@
 import pygame
 
 from .gameobject import Gameobject
-from .transform import Transform
+from ..components.transform import Transform
 
 from .exceptions import PyGamekitError
 

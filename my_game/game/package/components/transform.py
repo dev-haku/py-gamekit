@@ -1,6 +1,6 @@
 import pygame
 
-from .component import Component
+from ..core.component import Component
 
 
 class Transform(Component):

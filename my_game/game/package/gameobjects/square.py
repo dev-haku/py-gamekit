@@ -1,9 +1,9 @@
 import pygame
 
-from ..core.collider import Collider
+from ..components.collider import Collider
 from ..core.gameobject import Gameobject
-from ..core.sprite_renderer import SpriteRenderer
-from ..core.transform import Transform
+from ..components.sprite_renderer import SpriteRenderer
+from ..components.transform import Transform
 
 
 class Square(Gameobject):

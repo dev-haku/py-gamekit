@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 import pygame
 
-from .collision_system import CollisionSystem
-from .component import Component
-from .render_data import RenderData
+from ..core.collision_system import CollisionSystem
+from ..core.component import Component
+from ..core.render_data import RenderData
 from .transform import Transform
 
 
