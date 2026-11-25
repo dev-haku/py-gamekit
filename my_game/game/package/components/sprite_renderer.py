@@ -1,33 +1,31 @@
 import pygame
 
 from ..util.get_scaled_surface import get_scaled_surface
-from .component import Component
-from .render_data import RenderData
+from ..core.component import Component
+from ..core.render_data import RenderData
 from .transform import RectTransform, Transform
 
 
 class SpriteRenderer(Component):
 
     def __init__(
-        self, 
-        engine, 
-        scene, 
-        parent, 
+        self,
+        context,
         surface: pygame.Surface | None = None
     ) -> None:
-        super().__init__(engine, scene, parent)
+        super().__init__(context)
 
         self._original_surface: pygame.Surface = surface
         self._offset_position = pygame.Vector2()
         self._flag = True
         self.rotation_angle = 0
 
-        self.parent_transform: Transform = self.parent.get_component("Transform")
-        if self.parent_transform is None:
-            self.parent_transform: RectTransform = self.parent.get_component("RectTransform")
+        self._parent_transform: Transform = self.parent.get_component("Transform")
+        if self._parent_transform is None:
+            self._parent_transform: RectTransform = self.parent.get_component("RectTransform")
 
-        self.render_data = RenderData()
-        self.render_data.transform_type = self.parent_transform.__class__.__name__
+        self.render_data.active = True
+        self.render_data.transform_type = self._parent_transform.__class__.__name__
 
     @property
     def surface(self) -> pygame.Surface:
@@ -41,8 +39,8 @@ class SpriteRenderer(Component):
     @property
     def scaled_size(self) -> tuple[float, float]:
         return (
-            self._original_surface.get_width() * self.parent_transform.scale.x,
-            self._original_surface.get_height() * self.parent_transform.scale.y
+            self._original_surface.get_width() * self._parent_transform.scale.x,
+            self._original_surface.get_height() * self._parent_transform.scale.y
         )
 
     @property
@@ -105,11 +103,11 @@ class SpriteRenderer(Component):
             self._flag = False
 
         self.render_data.position.xy = (
-            self.parent_transform.position.x + self._offset_position.x - self.render_data.surface.get_width()/4, 
-            self.parent_transform.position.y + self._offset_position.y - self.render_data.surface.get_height()/4
+            self._parent_transform.position.x + self._offset_position.x - self.render_data.surface.get_width()/4, 
+            self._parent_transform.position.y + self._offset_position.y - self.render_data.surface.get_height()/4
         )
         
-        self.render_data.layer = self.parent_transform.layer
+        self.render_data.layer = self._parent_transform.layer
 
         return super().update()
 
@@ -119,8 +117,8 @@ class SpriteRenderer(Component):
 
 
 class SimpleSpriteRenderer(Component):
-    def __init__(self, engine, scene, parent, surface: pygame.Surface):
-        super().__init__(engine, scene, parent)
+    def __init__(self, context, surface: pygame.Surface):
+        super().__init__(context)
         self._original_surface: pygame.Surface = surface
         self._offset_position = pygame.Vector2()
 
@@ -128,7 +126,7 @@ class SimpleSpriteRenderer(Component):
         if self._parent_transform is None:
             self._parent_transform: RectTransform = self.parent.get_component("RectTransform")
 
-        self.render_data = RenderData()
+        self.render_data.active = True
         self.render_data.transform_type = self._parent_transform.__class__.__name__
         self.render_data.surface = get_scaled_surface(self._original_surface, (self._parent_transform.scale.x, self._parent_transform.scale.y))
 
@@ -149,10 +147,10 @@ class SimpleSpriteRenderer(Component):
         
     def update(self):
         self.render_data.position.xy = (
-            self.parent_transform.position.x + self._offset_position.x, 
-            self.parent_transform.position.y + self._offset_position.y
+            self._parent_transform.position.x + self._offset_position.x, 
+            self._parent_transform.position.y + self._offset_position.y
         )
 
-        self.render_data.layer = self.parent_transform.layer
+        self.render_data.layer = self._parent_transform.layer
 
         return super().update()

@@ -2,8 +2,8 @@ from ..core.component import Component
 
 
 class Timer(Component):
-    def __init__(self, engine, scene, parent, kwargs):
-        super().__init__(engine, scene, parent, kwargs)
+    def __init__(self, context):
+        super().__init__(context)
         self._timers = []
 
         self.dt = self.engine.delta_time

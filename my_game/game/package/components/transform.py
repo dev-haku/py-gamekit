@@ -1,12 +1,12 @@
 import pygame
 
-from .component import Component
+from ..core.component import Component
 
 
 class Transform(Component):
 
-    def __init__(self, engine, scene, parent):
-        super().__init__(engine, scene, parent)
+    def __init__(self, context):
+        super().__init__(context)
 
         self._position: pygame.Vector2 = pygame.Vector2(0,0)
         self._scale: pygame.Vector2 = pygame.Vector2(1,1)
@@ -34,8 +34,8 @@ class Transform(Component):
     
 class RectTransform(Component):
 
-    def __init__(self, engine, scene, parent):
-        super().__init__(engine, scene, parent)
+    def __init__(self, context):
+        super().__init__(context)
 
         self._position: pygame.Vector2 = pygame.Vector2(0,0)
         self._scale: pygame.Vector2 = pygame.Vector2(1,1)

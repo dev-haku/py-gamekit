@@ -12,8 +12,9 @@ if TYPE_CHECKING:
 
 class Scene:
     
-    def __init__(self, engine: Engine) -> None:
-        self.engine: Engine = engine
+    def __init__(self, context) -> None:
+        
+        self.engine: Engine = context["engine"]
 
         self.gameobjects: list[Gameobject] = [] 
         
@@ -37,11 +38,15 @@ class Scene:
                 name = f"{class_name}{count}"
                 count += 1
 
+        context = {
+            "engine" : self.engine, 
+            "scene" : self, 
+            "parent" : None, 
+            "name" : name, 
+        }
+
         go = gameobject_class(
-            engine= self.engine, 
-            scene= self, 
-            parent= None, 
-            name= name, 
+            context,
             **kwargs
         )
 

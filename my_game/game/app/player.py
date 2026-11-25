@@ -13,16 +13,13 @@ class Player(Gameobject):
 
     def __init__(
         self, 
-        engine, 
-        scene, 
-        parent, 
-        name,
+        context,
         position: tuple[float,float], 
         scale: tuple[float,float], 
         layer: int, 
         move_speed: int
     ) -> None:
-        super().__init__(engine, scene, parent, name)
+        super().__init__(context)
         
         self.transform = self.add_component(Transform)
         self.transform.position = position
@@ -61,8 +58,8 @@ class Player(Gameobject):
         
 class Controller(Component):
 
-    def __init__(self, engine, scene, parent) -> None:
-        super().__init__(engine, scene, parent)
+    def __init__(self, context):
+        super().__init__(context)
 
         self._parent_transform: Transform = self.parent.get_component("Transform")
         self._parent_sprite_renderer: SpriteRenderer = self.parent.get_component("SpriteRenderer")

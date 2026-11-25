@@ -4,8 +4,8 @@ from .player import Player
 
 class GameScene(Scene):
 
-    def __init__(self, engine) -> None:
-        super().__init__(engine)
+    def __init__(self, context):
+        super().__init__(context)
 
         _camera = self.get_gameobject("Camera")
         _camera.anchor = (0.5,0.5)

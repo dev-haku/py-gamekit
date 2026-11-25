@@ -8,12 +8,12 @@ from .gameobject import Gameobject
 
 if TYPE_CHECKING:
     from .collider import Collider
-    from .transform import Transform
+    from ..components.transform import Transform
    
 
 class CollisionSystem(Gameobject):
-    def __init__(self, engine, scene, parent, name):
-        super().__init__(engine, scene, parent, name)
+    def __init__(self, context):
+        super().__init__(context)
         self._collisions: dict[Collider, list[Collider]] = {}
 
     def update(self):

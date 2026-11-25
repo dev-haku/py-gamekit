@@ -1,14 +1,14 @@
 import pygame
 
 from .gameobject import Gameobject
-from .transform import Transform
+from ..components.transform import Transform
 
 from .exceptions import PyGamekitError
 
 class Camera(Gameobject):
     
-    def __init__(self, engine, scene, parent, name):
-        super().__init__(engine, scene, parent, name)
+    def __init__(self, context):
+        super().__init__(context)
         self.tags.append("camera")
         self.add_component(Transform)
 

@@ -85,8 +85,8 @@ class AnimationPlayer:
 
 class Animator(Component):
 
-    def __init__(self, engine, scene, parent, kwargs):
-        super().__init__(engine, scene, parent, kwargs)
+    def __init__(self, context):
+        super().__init__(context)
         
         self.animations: list[AnimationData] = []
         self.animation_player: AnimationPlayer = AnimationPlayer()
