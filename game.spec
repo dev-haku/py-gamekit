@@ -3,7 +3,6 @@
 
 import pathlib
 import sys
-import yaml
 import tomllib
 
 
