@@ -1,0 +1,22 @@
+title = "My Game"
+version = "0.0.0"
+icon_image_path = "./package/assets/image/default_icon.ico"
+bundle_identifier = "com.devhaku.pygamekit"
+
+max_tps = 60
+max_fps = 30
+
+[window]
+width = 640
+height = 480
+fullscreen = false
+resizable = true
+
+[screen]
+width = 640
+height = 480
+
+[debug]
+show_colliders = false
+print_key_events = false
+show_performance = false

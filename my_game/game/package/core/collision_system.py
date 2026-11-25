@@ -1,18 +1,19 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
 import pygame
 
 from .gameobject import Gameobject
 
 if TYPE_CHECKING:
-    from .transform import Transform
     from .collider import Collider
+    from .transform import Transform
    
 
 class CollisionSystem(Gameobject):
-    def __init__(self, engine, scene, kwargs):
-        super().__init__(engine, scene, kwargs)
-
+    def __init__(self, engine, scene, parent, name):
+        super().__init__(engine, scene, parent, name)
         self._collisions: dict[Collider, list[Collider]] = {}
 
     def update(self):
@@ -50,10 +51,10 @@ class CollisionSystem(Gameobject):
     # 審査: collider と transform をセットでもつ
     def _collect_collidables(self) -> list[tuple[Collider, Transform]]:
         candidates = []
-        for gameobject in self.scene.gameobjects:
+        for go in self.scene.gameobjects:
             
-            transform: Transform = gameobject.get_component("Transform")
-            collider: Collider = gameobject.get_component("Collider")
+            transform: Transform = go.get_component("Transform")
+            collider: Collider = go.get_component("Collider")
 
             if collider is None or transform is None:
                 continue

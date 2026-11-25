@@ -1,21 +1,25 @@
-from pathlib import Path
 import pygame
 
-from .render_data import RenderData
-from .component import Component
-from .transform import Transform, RectTransform
 from ..util.get_scaled_surface import get_scaled_surface
+from .component import Component
+from .render_data import RenderData
+from .transform import RectTransform, Transform
 
 
 class SpriteRenderer(Component):
 
-    def __init__(self, engine, scene, parent, kwargs):
-        super().__init__(engine, scene, parent, kwargs)
+    def __init__(
+        self, 
+        engine, 
+        scene, 
+        parent, 
+        surface: pygame.Surface | None = None
+    ) -> None:
+        super().__init__(engine, scene, parent)
 
-        self._original_surface: pygame.Surface = kwargs.get("surface") or None
+        self._original_surface: pygame.Surface = surface
         self._offset_position = pygame.Vector2()
         self._flag = True
-
         self.rotation_angle = 0
 
         self.parent_transform: Transform = self.parent.get_component("Transform")
@@ -115,25 +119,24 @@ class SpriteRenderer(Component):
 
 
 class SimpleSpriteRenderer(Component):
-    def __init__(self, engine, scene, parent, kwargs):
-        super().__init__(engine, scene, parent, kwargs)
-
-        self._original_surface: pygame.Surface = kwargs["surface"]
+    def __init__(self, engine, scene, parent, surface: pygame.Surface):
+        super().__init__(engine, scene, parent)
+        self._original_surface: pygame.Surface = surface
         self._offset_position = pygame.Vector2()
 
-        self.parent_transform: Transform = self.parent.get_component("Transform")
-        if self.parent_transform is None:
-            self.parent_transform: RectTransform = self.parent.get_component("RectTransform")
+        self._parent_transform: Transform = self.parent.get_component("Transform")
+        if self._parent_transform is None:
+            self._parent_transform: RectTransform = self.parent.get_component("RectTransform")
 
         self.render_data = RenderData()
-        self.render_data.transform_type = self.parent_transform.__class__.__name__
-        self.render_data.surface = get_scaled_surface(self._original_surface, (self.parent_transform.scale.x, self.parent_transform.scale.y))
+        self.render_data.transform_type = self._parent_transform.__class__.__name__
+        self.render_data.surface = get_scaled_surface(self._original_surface, (self._parent_transform.scale.x, self._parent_transform.scale.y))
 
     @property
     def scaled_size(self):
         return (
-            self._original_surface.get_width() * self.parent_transform.scale.x,
-            self._original_surface.get_height() * self.parent_transform.scale.y
+            self._original_surface.get_width() * self._parent_transform.scale.x,
+            self._original_surface.get_height() * self._parent_transform.scale.y
         )
 
     @property

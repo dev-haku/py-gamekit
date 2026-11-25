@@ -1,5 +1,6 @@
 import pygame
 
+
 def split_sprite_sheet(image_path: str, cut_size: tuple[int,int]) -> list[pygame.Surface]:
 
     frames = []
