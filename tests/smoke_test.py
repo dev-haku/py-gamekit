@@ -8,3 +8,5 @@ commands = [
 
 for command in commands:
     subprocess.run(command, check=True)
+
+print(">>>>>> Tests All Clear <<<<<<")

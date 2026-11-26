@@ -56,7 +56,7 @@ PyInstaller is used to build standalone applications.
 Build artifacts are generated in the `build/` directory.
 
 ```bash
-python build.py
+python tool/build.py
 ```
 
 ## License

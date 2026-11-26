@@ -54,7 +54,7 @@ PyInstaller を使用して、単体で実行可能なアプリケーション�
 ビルド成果物は `build/` ディレクトリに出力されます。
 
 ```bash
-python build.py
+python tool/build.py
 ```
 
 ## ライセンス
