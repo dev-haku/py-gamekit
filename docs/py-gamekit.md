@@ -33,10 +33,8 @@ flowchart TD
     B --> C[GameObject]
     C --> D[Component]
 
-    C --> E[Child GameObject]
+    C --> E[GameObject]
     E --> F[Component]
-
-    D --> G[各種機能]
 ```
 
 - **Engine**：ゲーム全体の実行を管理する
@@ -63,7 +61,7 @@ class Engine {
     +start()
     +loop()
     +update()
-    +draw()
+    +render()
 }
 
 class Scene {
@@ -73,7 +71,6 @@ class Scene {
     +__init__()
     +start()
     +update()
-    +render()
 }
 
 class GameObject {
@@ -84,7 +81,6 @@ class GameObject {
     +__init__()
     +start()
     +update()
-    +draw()
 
     +add_component()
     +find_component()
@@ -99,7 +95,6 @@ class Component {
     +__init__()
     +start()
     +update()
-    +draw()
 }
 
 Engine "1" o-- "*" Scene : scenes
@@ -153,7 +148,7 @@ class Engine {
     +start()
     +loop()
     +update()
-    +draw()
+    +render()
 }
 ```
 
@@ -186,9 +181,9 @@ class Scene {
     +list~GameObject~ gameobjects
 
     +__init__()
-    +start()
+    +add_gameobject()
+    +get_gameobject()
     +update()
-    +render()
 }
 ```
 
@@ -223,9 +218,7 @@ class GameObject {
     +list~GameObject~ children
 
     +__init__()
-    +start()
     +update()
-    +draw()
 
     +add_component()
     +find_component()
@@ -295,12 +288,9 @@ classDiagram
 
 class Component {
     +bool active
-    +bool is_started
 
     +__init__()
-    +start()
     +update()
-    +draw()
 }
 ```
 

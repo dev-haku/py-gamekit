@@ -15,19 +15,16 @@ class Gameobject:
     
     def __init__(
         self, 
-        engine: Engine, 
-        scene: Scene, 
-        parent: Gameobject | None,
-        name: str,
+        context
     ) -> None:
-        self.engine: Engine = engine
-        self.scene: Scene = scene
+        self.engine: Engine = context["engine"]
+        self.scene: Scene = context["scene"]
 
         self.active: bool = True 
-        self.name = name
+        self.name = context["name"]
         self.tags: list[str] = []
 
-        self._parent = parent
+        self._parent = context["parent"]
         self._children:list[Gameobject] = []
         self._components: dict[str, Component] = {}
         
@@ -59,7 +56,14 @@ class Gameobject:
                 name = f"{class_name}{count}"
                 count += 1
 
-        go = gameobject_class(self.engine, self.scene, self, name, **kwargs)
+        context = {
+            "engine" : self.engine, 
+            "scene" : self.scene, 
+            "parent" : self, 
+            "name" : name
+        }
+
+        go = gameobject_class(context, **kwargs)
 
         self._children.append(go)
         self.scene.gameobjects.append(go)
@@ -84,7 +88,13 @@ class Gameobject:
         if self.engine is None:
             raise PyGamekitError(f"{self.__class__.__name__} の self.engine が None")
 
-        comp = component_class(self.engine, self.scene, self, **kwargs)
+        context = {
+            "engine" : self.engine, 
+            "scene" : self.scene, 
+            "parent" : self, 
+        }
+
+        comp = component_class(context, **kwargs)
         self._components[comp.__class__.__name__] = comp
 
         return comp

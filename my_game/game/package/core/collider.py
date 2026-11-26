@@ -4,8 +4,7 @@ import pygame
 
 from .collision_system import CollisionSystem
 from .component import Component
-from .render_data import RenderData
-from .transform import Transform
+from ..components.transform import Transform
 
 
 @dataclass
@@ -17,16 +16,17 @@ class Hitbox:
 
 class Collider(Component):
 
-    def __init__(self, engine, scene, parent) -> None:
-        super().__init__(engine, scene, parent)
+    def __init__(self, context):
+        super().__init__(context)
         
         self._hitboxes: list[Hitbox] = []
 
         self._parent_transform: Transform = self.parent.get_component("Transform")
         self._collider_system: CollisionSystem = self.scene.get_gameobject("CollisionSystem")
-
-        self.render_data = RenderData()
-        self.render_data.transform_type = self._parent_transform.__class__.__name__
+             
+        if self.engine.debug_config.show_colliders:
+            self.render_data.active = True
+            self.render_data.transform_type = self._parent_transform.__class__.__name__
 
     @property
     def hitboxes(self) -> list[Hitbox]:
@@ -53,8 +53,7 @@ class Collider(Component):
             return [collider.parent for collider in self._collider_system.get_colliding_colliders(self)]
                 
     def update(self):
-        self.render_data.active = False
-        if self.engine.debug_settings["show_colliders"]:
+        if self.render_data.active:
             self._update_debug_surface()
 
         return super().update()

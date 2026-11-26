@@ -1,20 +1,20 @@
 import pygame
 
 from ..core.gameobject import Gameobject
-from ..core.sprite_renderer import SpriteRenderer
-from ..core.transform import RectTransform
+from ..components.sprite_renderer import SpriteRenderer
+from ..components.transform import RectTransform
 
 
 class Image(Gameobject):
     def __init__(
             self, 
-            engine, scene, parent, name,
+            context,
             position: tuple[float, float], 
             scale: tuple[float, float], 
             layer: int, 
             surface: pygame.Surface
         ) -> None:
-        super().__init__(engine, scene, parent, name)
+        super().__init__(context)
 
         transform = self.add_component(RectTransform)
         transform.position = position
@@ -31,7 +31,7 @@ class Image(Gameobject):
 class Text(Gameobject):
     def __init__(
         self, 
-        engine, scene, parent, name,
+        context,
         position: tuple[float,float],
         scale: tuple[float,float],
         layer: int,
@@ -40,7 +40,7 @@ class Text(Gameobject):
         color: tuple[int,int,int],
         init_active: bool
     ) -> None:
-        super().__init__(engine, scene, parent, name)
+        super().__init__(context)
 
         self.active = init_active
 

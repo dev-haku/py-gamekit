@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import asyncio
 import time
 import tomllib
 from enum import IntEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import pygame
 
@@ -14,23 +15,28 @@ from .exceptions import PyGamekitError
 if TYPE_CHECKING:
     from .scene import Scene
 
+@dataclass(frozen=True)
+class DebugConfig:
+    show_colliders: bool
+    print_key_events: bool
+    show_performance: bool
 
 class Engine:  
 
     def __init__(self):
 
-        
         with open(paths.ROOT / "config.toml", "rb") as f:
-            config = tomllib.load(f)
+            config: dict = tomllib.load(f)
 
         self.running: bool = False
         self.delta_time: float = 1.0 / config["max_tps"]
         self.global_values = definition.global_values
+        self.debug_config = DebugConfig(**config["debug"])
+
         self.keyboard = Keyboard()
         self.mouse = Mouse()
         self.scheduler = Scheduler()
-        self.debug_settings = definition.debug
-    
+
         pygame.init()
 
         flags = 0
@@ -72,7 +78,8 @@ class Engine:
                 f"scenes_count={len(self.scenes)}"
             )
 
-        self.current_scene = self.scenes[index](engine=self)
+        context = {"engine" : self}
+        self.current_scene = self.scenes[index](context)
 
     def shutdown(self):
         self.running = False
@@ -113,7 +120,8 @@ class Engine:
             if fps_timer >= 2.0:
                 fps = fps_count / fps_timer
 
-                print(f"{tps:.1f} ticks, {fps:.1f} fps")
+                if self.debug_config.show_performance:
+                    print(f"{tps:.1f} ticks, {fps:.1f} fps")
 
                 fps_timer = 0.0
                 fps_count = 0
@@ -247,6 +255,7 @@ class Engine:
             return False
     
         return True
+
     
 class Keyboard:
     def __init__(self):
@@ -262,7 +271,7 @@ class Keyboard:
             if event.type == pygame.KEYDOWN:
                 self._keys[pygame.key.name(event.key)] = True
 
-                if engine.debug_settings["print_key_events"]:
+                if engine.debug_config.print_key_events:
                     print(pygame.key.name(event.key))
 
             elif event.type == pygame.KEYUP:
